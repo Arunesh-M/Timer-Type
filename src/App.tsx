@@ -23,6 +23,7 @@ function App(){
   } = useStopwatch({ autoStart: false });
 
   const[items,setItems]=useState<props[]>([])
+  const[ritems,setRitems]=useState<props[]>([])
 
   const addList=() =>{
     const id=items.length ? items[items.length-1].id + 1 :1
@@ -32,29 +33,29 @@ function App(){
     const listItems=[...items,newItem]
     
     // Removind duplicates
-    let newArray:props[] = [];
-    let uniqueObject:{[key: string]:props}= {};
+    // let newArray:props[] = [];
+    // let uniqueObject:{[key: string]:props}= {};
 
-    for(let i in listItems){
-      let unique=listItems[i]['time']
-      uniqueObject[unique]=listItems[i]
-    }
+    // for(let i in listItems){
+    //   let unique=listItems[i]['time']
+    //   uniqueObject[unique]=listItems[i]
+    // }
 
-    for(let i in uniqueObject){
-      newArray.push(uniqueObject[i]);
-    }
+    // for(let i in uniqueObject){
+    //   newArray.push(uniqueObject[i]);
+    // }
     // 
   
     if(time!=="00:00:00"){
-      setItems(newArray) 
+      setItems(listItems) 
+      setRitems([...listItems].reverse())
     }
   }
 
   const removeList=()=>{
     setItems([])
   }
- 
-  
+   
   return (
     <>
      <Typography variant='h1' component='p' align='center' gutterBottom={true} sx={{marginTop:"10px"}}>
@@ -63,13 +64,18 @@ function App(){
        {seconds <10 ? `0${seconds}` : seconds}
      </Typography>
      <Box sx={{display:"flex",justifyContent:"center",gap:"10px",marginBottom:"50px"}} >
+        {!toggle ?
         <Button variant="outlined" color="primary" onClick={()=>addList()}>Lap</Button>
+        : null}
         {toggle ? 
         <Button variant="outlined" color="success" onClick={()=>{start();isToggle(false)}}>Start</Button>
         :
-        <Button variant="outlined" color="error" onClick={()=>{pause();isToggle(true)}}>Stop</Button>
-        }
-        <Button variant="outlined" color="warning" onClick={()=>{reset();removeList()}}>Reset</Button>   
+        <>
+           <Button variant="outlined" color="error" onClick={()=>{pause();isToggle(true)}}>Stop</Button>
+           <Button variant="outlined" color="warning" onClick={()=>{reset(undefined,false);removeList();isToggle(true)}}>Reset</Button>
+        </>
+        }      
+          
      </Box>
      {items.length > 0 ?
      <TableContainer >
@@ -81,7 +87,7 @@ function App(){
             </TableRow>
           </TableHead>
           <TableBody>
-             {items.map((item)=>(
+             {ritems.map((item)=>(
               <TableRow key={item.id}>
                 <TableCell>{item.index}</TableCell>
                 <TableCell align="right">{item.time}</TableCell>
@@ -96,4 +102,3 @@ function App(){
 }
 
 export default App;
-
